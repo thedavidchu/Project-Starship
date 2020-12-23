@@ -8,32 +8,31 @@ Contains the class call for a generic engine.
 Dictate the statistics of an engine.
 """
 
-
 import math
 
 
 class Engine(object):
     def __init__(self, name: str = 'Engine', dry_mass: int = 100, cost: int = 100,
-                 energy_efficiency = lambda x: 1.0 * x, momentum_efficiency = lambda x: 1.0 * x,
-                 max_flow: int = 100, energy_density: int = 299792458**2):
+                 energy_efficiency=lambda x: 1 * x, momentum_efficiency=lambda x: 1 * x,
+                 max_flow: int = 100, energy_density: int = 299792458 ** 2):
 
         # Overview
-        self.name = name                                    # Default: 'Engine'
-        self.mass = dry_mass                                # Default: 100 [kg]
-        self.cost = cost                                    # Default: 100 [$]
+        self.name = name  # Default: 'Engine'
+        self.dry_mass = dry_mass  # Default: 100 [kg]
+        self.cost = cost  # Default: 100 [$]
 
         # Statistics
-        self.energy_efficiency = energy_efficiency          # Default: x*100%
-        self.momentum_efficiency = momentum_efficiency      # Default: x*100%
-        self.max_flow = max_flow                            # Default: 100 [kg/s]
-        self.energy_density = energy_density                # Default: c^2 [J/kg]
+        self.energy_efficiency = energy_efficiency  # Default: x*100%
+        self.momentum_efficiency = momentum_efficiency  # Default: x*100%
+        self.max_flow = max_flow  # Default: 100 [kg/s]
+        self.energy_density = energy_density  # Default: c^2 [J/kg]
 
         # Usage
-        self.flow = 0                                       # Not used
-        self.temperature = 0                                # Not used
-        self.wear = 0                                       # Not used
+        self.flow = 0  # Not used
+        self.temperature = 0  # Not used
+        self.wear = 0  # Not used
 
-    def fusion_thrust(self, fuel: int = 1, dt: float = 1.0):
+    def thrust(self, fuel: int = 1, dt: float = 1):
         """
         Take in fuel and output thrust force magnitude and fuel burned.
 
@@ -62,18 +61,21 @@ class Engine(object):
             - int - quantity of fuel burned
         """
         # Error Check Fuel flow
-        if fuel > self.max_flow:    # Restrict max fuel flow
+        if fuel > self.max_flow:  # Restrict max fuel flow
             m = self.max_flow
-        elif fuel <= 0:             # Fuel flow must be strictly positive
+        elif fuel <= 0:  # Fuel flow must be strictly positive
             return 0, 0
-        else:                       # Take fuel if valid
+        else:  # Take fuel if valid
             m = fuel
 
         energy = self.energy_efficiency(m * self.energy_density)
-        momentum = self.momentum_efficiency(math.sqrt(2*energy*m))
+        momentum = self.momentum_efficiency(math.sqrt(2 * energy * m))
         force = momentum / dt
 
         return force, m
+
+    def angular_thrust(self, fuel, dt: float = 1):
+        raise NotImplementedError
 
     def heat_analysis(self):
         """
@@ -93,3 +95,24 @@ class Engine(object):
         :return: None
         """
         return None
+
+    # ============================== RETURNS ============================== #
+    def get_fuel_limit(self, fuel: int = None, dt: float = 1):
+        """
+        Check fuel limit.
+
+        :param fuel:
+        :param dt:
+        :return:
+        """
+        if fuel is None:  # Return max flow
+            return self.max_flow * dt
+        elif fuel > self.max_flow * dt:  # Return max flow
+            return self.max_flow * dt
+        elif fuel <= 0:  # Return 0
+            return 0
+        else:  # Return requested
+            return fuel
+
+    def get_mass(self):
+        return self.dry_mass
