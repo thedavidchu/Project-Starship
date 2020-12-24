@@ -8,6 +8,7 @@ Quaternion library. I know that SciPy has one, but I have always wanted to make 
 
 """
 
+
 import numpy as np
 import math
 
@@ -252,7 +253,7 @@ class Quaternion(object):
         self.q /= norm**2
         return
 
-    # ============================== DISPLAY ============================== #
+    # ============================== ROTATION ============================== #
     def rotate(self, axis, angle):
         """
         **UNTESTED... so is ADD, IADD, SUB, ISUB, etc.**
@@ -265,7 +266,6 @@ class Quaternion(object):
         p = q * self * q.inverse()
         self = p
         return p
-
 
     # ============================== DISPLAY ============================== #
     def __getitem__(self, item):
@@ -286,8 +286,8 @@ class Quaternion(object):
 
 
 if __name__ == '__main__':
-    q = Quaternion(1,2,3,5)
-    p = Quaternion(1,2,3,4)
+    q = Quaternion(1, 2, 3, 5)
+    p = Quaternion(1, 2, 3, 4)
     a = q + p
     b = q * p
 
