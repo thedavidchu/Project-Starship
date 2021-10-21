@@ -31,7 +31,7 @@ class Vector:
         return f"<{', '.join(map(str, self._vector))}>"
 
     def __repr__(self):
-        return str(self)
+        return f"<{', '.join(map(repr, self._vector))}>"
 
     # Iterating over
     def __contains__(self, item):
